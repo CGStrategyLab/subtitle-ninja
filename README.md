@@ -47,7 +47,7 @@ Choose from 5 professionally designed subtitle styles:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/subtitle-ninja.git
+git clone https://github.com/CGStrategyLab/subtitle-ninja.git
 cd subtitle-ninja
 
 # Start all services (first run downloads AI models ~74MB)
@@ -201,7 +201,7 @@ docker-compose up --build -d
 For technical questions and advanced implementation patterns:
 - **Documentation**: Check our [troubleshooting guide](docs/TROUBLESHOOTING.md)
 - **AI Strategy**: Visit [CG Strategy Lab](https://cgstrategylab.com) for workflow automation insights
-- **Issues**: Report bugs via [GitHub Issues](https://github.com/yourusername/subtitle-ninja/issues)
+- **Issues**: Report bugs via [GitHub Issues](https://github.com/CGStrategyLab/subtitle-ninja/issues)
 
 ---
 
