@@ -1,0 +1,67 @@
+
+services:
+  web-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    depends_on:
+      - minio
+      - redis
+    volumes:
+      - ./api:/app/api
+      - ./workflows:/app/workflows
+      - ./static:/app/static
+      - ./uploads:/app/uploads
+      - ./downloads:/app/downloads
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+
+  processor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    depends_on:
+      - minio
+      - redis
+    volumes:
+      - ./api:/app/api
+      - ./workflows:/app/workflows
+      - ./uploads:/app/uploads
+      - ./downloads:/app/downloads
+    command: celery -A workflows.celery_app worker --loglevel=info
+
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  minio_data:
+  redis_data:
